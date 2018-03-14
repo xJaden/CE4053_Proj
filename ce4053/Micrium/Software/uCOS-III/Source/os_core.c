@@ -31,6 +31,11 @@
 */
 
 #include  <os.h>
+#include <avl.h>
+#include <heap1.h>
+#include <heap.h>
+
+
 
 #ifdef VSC_INCLUDE_SOURCE_FILE_NAMES
 const  CPU_CHAR  *os_core__c = "$Id: $";
@@ -207,6 +212,12 @@ void  OSInit (OS_ERR  *p_err)
 #endif
 
     OSCfg_Init();
+   // OS_TaskLoaderInit(p_err); 
+    avlInit();
+   heap_create();
+   // initMinHeap();
+
+
 }
 
 /*$PAGE*/
@@ -371,7 +382,20 @@ void  OSSched (void)
 
     CPU_INT_DIS();
     OSPrioHighRdy   = OS_PrioGetHighest();                  /* Find the highest priority ready                        */
+    if(OSPrioHighRdy >3){
+      OS_TCB * task = OSEDFSched();
+      if(task == 0)
+        OSTCBHighRdyPtr = OSRdyList[OSPrioHighRdy].HeadPtr;
+      else{
+       // OS_RdyListInsertTail(task);
+        OSTCBHighRdyPtr = task;
+       // printf("%s in OSSched\n",OSTCBHighRdyPtr->NamePtr);
+      }
+    }
+    else{
     OSTCBHighRdyPtr = OSRdyList[OSPrioHighRdy].HeadPtr;
+    }
+   
     if (OSTCBHighRdyPtr == OSTCBCurPtr) {                   /* Current task is still highest priority task?           */
         CPU_INT_EN();                                       /* Yes ... no need to context switch                      */
         return;

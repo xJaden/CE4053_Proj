@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<settings>
+    <Stack>
+        <FillEnabled>0</FillEnabled>
+        <OverflowWarningsEnabled>1</OverflowWarningsEnabled>
+        <WarningThreshold>90</WarningThreshold>
+        <SpWarningsEnabled>1</SpWarningsEnabled>
+        <WarnLogOnly>1</WarnLogOnly>
+        <UseTrigger>1</UseTrigger>
+        <TriggerName>main</TriggerName>
+        <LimitSize>0</LimitSize>
+        <ByteLimit>50</ByteLimit>
+    </Stack>
+    <LMIFTDIDriver>
+        <LMI_ResetMode>0x00000000</LMI_ResetMode>
+        <LMIFTDIserialNo>0C111A60A</LMIFTDIserialNo>
+        <LMIFTDIfoundProbes />
+    </LMIFTDIDriver>
+    <Exceptions>
+        <StopOnUncaught>_ 0</StopOnUncaught>
+        <StopOnThrow>_ 0</StopOnThrow>
+    </Exceptions>
+    <DebugChecksum>
+        <Checksum>1982668925</Checksum>
+    </DebugChecksum>
+    <CallStack>
+        <ShowArgs>0</ShowArgs>
+    </CallStack>
+    <Disassembly>
+        <MixedMode>1</MixedMode>
+    </Disassembly>
+    <Log_file>
+        <LoggingEnabled>_ 0</LoggingEnabled>
+        <LogFile>_ ""</LogFile>
+        <Category>_ 0</Category>
+    </Log_file>
+    <DriverProfiling>
+        <Enabled>0</Enabled>
+        <Mode>0</Mode>
+        <Graph>0</Graph>
+        <Symbiont>0</Symbiont>
+        <Exclusions />
+    </DriverProfiling>
+    <Disassemble_mode>
+        <mode>0</mode>
+    </Disassemble_mode>
+    <struct_types>
+        <Fmt0>OS_TCB-PendStatus	3	0</Fmt0>
+        <Fmt1>OS_TCB-Prio	3	0</Fmt1>
+    </struct_types>
+    <watch_formats>
+        <Fmt0>{W}1:OSPrioHighRdy	3	0</Fmt0>
+        <Fmt1>{W}1:OSTimeGet	3	0</Fmt1>
+    </watch_formats>
+    <TermIOLog>
+        <LoggingEnabled>_ 0</LoggingEnabled>
+        <LogFile>_ ""</LogFile>
+    </TermIOLog>
+    <CallStackLog>
+        <Enabled>0</Enabled>
+    </CallStackLog>
+    <CallStackStripe>
+        <ShowTiming>1</ShowTiming>
+    </CallStackStripe>
+    <LogFile>
+        <LoggingEnabled>_ 0</LoggingEnabled>
+        <LogFile>_ ""</LogFile>
+        <Category>_ 0</Category>
+    </LogFile>
+    <DisassembleMode>
+        <mode>0</mode>
+    </DisassembleMode>
+    <Breakpoints>
+        <Bp0>_ "STD_CODE" "{C:\Users\Jaden\Desktop\NTU Stuff\Embedded OS\CE4053(Orignal)\ce4053\Micrium\Software\uCOS-III\Source\os_mutex.c}.900.1" 0 0 0 0 "" 0 ""</Bp0>
+        <Bp1>_ "STD_CODE" "{C:\Users\Jaden\Desktop\NTU Stuff\Embedded OS\CE4053(Orignal)\ce4053\Micrium\Software\uCOS-III\Source\os_mutex.c}.900.1" 0 0 0 0 "" 0 ""</Bp1>
+        <Count>2</Count>
+    </Breakpoints>
+    <Aliases>
+        <A0>_ "C:\Users\VijayaKumar\Desktop\Testing - Copy\test\cpe484_es6153\Micrium\Software\CPU\LuminaryMicro\DriverLib\driverlib\gpio.c" "C:\Users\Jaden\Desktop\NTU Stuff\Embedded OS\CE4053(Orignal)\ce4053\Micrium\Software\CPU\LuminaryMicro\DriverLib\driverlib\gpio.c"</A0>
+        <A1>_ "C:\Users\VijayaKumar\Desktop\Testing - Copy\test\cpe484_es6153\Micrium\Software\CPU\LuminaryMicro\DriverLib\driverlib\pwm.c" ""</A1>
+        <Count>2</Count>
+        <SuppressDialog>0</SuppressDialog>
+    </Aliases>
+</settings>

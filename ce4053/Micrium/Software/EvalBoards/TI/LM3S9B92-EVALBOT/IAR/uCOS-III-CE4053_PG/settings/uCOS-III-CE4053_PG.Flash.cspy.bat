@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\common\bin\cspybat" -f "C:\Users\vijayaku003\Dropbox\NTU\Semester_1\Testing - Copy\test\cpe484_es6153\Micrium\Software\EvalBoards\TI\LM3S9B92-EVALBOT\IAR\uCOS-III-CE4053_PG\settings\uCOS-III-CE4053_PG.Flash.general.xcl" --backend -f "C:\Users\vijayaku003\Dropbox\NTU\Semester_1\Testing - Copy\test\cpe484_es6153\Micrium\Software\EvalBoards\TI\LM3S9B92-EVALBOT\IAR\uCOS-III-CE4053_PG\settings\uCOS-III-CE4053_PG.Flash.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\Users\Jaden\Desktop\NTU Stuff\Embedded OS\CE4053(Orignal)\ce4053\Micrium\Software\EvalBoards\TI\LM3S9B92-EVALBOT\IAR\uCOS-III-CE4053_PG\settings\uCOS-III-CE4053_PG.Flash.general.xcl" --backend -f "C:\Users\Jaden\Desktop\NTU Stuff\Embedded OS\CE4053(Orignal)\ce4053\Micrium\Software\EvalBoards\TI\LM3S9B92-EVALBOT\IAR\uCOS-III-CE4053_PG\settings\uCOS-III-CE4053_PG.Flash.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\common\bin\cspybat" -f "C:\Users\vijayaku003\Dropbox\NTU\Semester_1\Testing - Copy\test\cpe484_es6153\Micrium\Software\EvalBoards\TI\LM3S9B92-EVALBOT\IAR\uCOS-III-CE4053_PG\settings\uCOS-III-CE4053_PG.Flash.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\vijayaku003\Dropbox\NTU\Semester_1\Testing - Copy\test\cpe484_es6153\Micrium\Software\EvalBoards\TI\LM3S9B92-EVALBOT\IAR\uCOS-III-CE4053_PG\settings\uCOS-III-CE4053_PG.Flash.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\Users\Jaden\Desktop\NTU Stuff\Embedded OS\CE4053(Orignal)\ce4053\Micrium\Software\EvalBoards\TI\LM3S9B92-EVALBOT\IAR\uCOS-III-CE4053_PG\settings\uCOS-III-CE4053_PG.Flash.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\Jaden\Desktop\NTU Stuff\Embedded OS\CE4053(Orignal)\ce4053\Micrium\Software\EvalBoards\TI\LM3S9B92-EVALBOT\IAR\uCOS-III-CE4053_PG\settings\uCOS-III-CE4053_PG.Flash.driver.xcl" 
 
 @echo off 
 :end

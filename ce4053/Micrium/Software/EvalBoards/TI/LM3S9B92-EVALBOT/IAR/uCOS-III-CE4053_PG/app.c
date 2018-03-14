@@ -56,7 +56,6 @@
 
 
 
-
 /*
 *********************************************************************************************************
 *                                            LOCAL VARIABLES
@@ -72,14 +71,24 @@ static  CPU_STK      AppTaskOneStk[APP_TASK_ONE_STK_SIZE];
 static  OS_TCB       AppTaskTwoTCB;
 static  CPU_STK      AppTaskTwoStk[APP_TASK_TWO_STK_SIZE];
 
+static  OS_TCB       AppTaskThreeTCB;
+static  CPU_STK      AppTaskThreeStk[APP_TASK_THREE_STK_SIZE];
+
+static  OS_TCB       AppTaskFourTCB;
+static  CPU_STK      AppTaskFourStk[APP_TASK_FOUR_STK_SIZE];
+
+static  OS_TCB       AppTaskFiveTCB;
+static  CPU_STK      AppTaskFiveStk[APP_TASK_FIVE_STK_SIZE];
+
+
 CPU_INT32U      iCnt = 0;
 CPU_INT08U      Left_tgt;
 CPU_INT08U      Right_tgt;
 CPU_INT32U      iToken  = 0;
 CPU_INT32U      iCounter= 1;
-CPU_INT32U      iMove   = 10;
+CPU_INT32U      iMove   = 2;
 CPU_INT32U      measure=0;
-
+extern CPU_INT32U  counter;
 
 /*
 *********************************************************************************************************
@@ -94,6 +103,9 @@ static  void        AppRobotMotorDriveSensorEnable    ();
 static  void        AppTaskStart                 (void  *p_arg);
 static  void        AppTaskOne                   (void  *p_arg);
 static  void        AppTaskTwo                   (void  *p_arg);
+static  void        AppTaskThree                 (void  *p_arg);
+static  void        AppTaskFour                 (void  *p_arg);
+static  void        AppTaskFive                 (void  *p_arg);
 
 
 /*
@@ -168,12 +180,21 @@ static  void  AppTaskStart (void  *p_arg)
     
     /* Initialise the 2 Main Tasks to  Deleted State */
 
-    OSTaskCreate((OS_TCB     *)&AppTaskOneTCB, (CPU_CHAR   *)"App Task One", (OS_TASK_PTR ) AppTaskOne, (void       *) 0, (OS_PRIO     ) APP_TASK_ONE_PRIO, (CPU_STK    *)&AppTaskOneStk[0], (CPU_STK_SIZE) APP_TASK_ONE_STK_SIZE / 10u, (CPU_STK_SIZE) APP_TASK_ONE_STK_SIZE, (OS_MSG_QTY  ) 0u, (OS_TICK     ) 0u, (void       *)(CPU_INT32U) 1, (OS_OPT      )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR), (OS_ERR     *)&err);
-    OSTaskCreate((OS_TCB     *)&AppTaskTwoTCB, (CPU_CHAR   *)"App Task Two", (OS_TASK_PTR ) AppTaskTwo, (void       *) 0, (OS_PRIO     ) APP_TASK_TWO_PRIO, (CPU_STK    *)&AppTaskTwoStk[0], (CPU_STK_SIZE) APP_TASK_TWO_STK_SIZE / 10u, (CPU_STK_SIZE) APP_TASK_TWO_STK_SIZE, (OS_MSG_QTY  ) 0u, (OS_TICK     ) 0u, (void       *) (CPU_INT32U) 2, (OS_OPT      )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR), (OS_ERR     *)&err);
+    OSRecTaskCreate((OS_TCB     *)&AppTaskOneTCB, (CPU_CHAR   *)"App Task One", (OS_TASK_PTR ) AppTaskOne, (void       *) 0, (OS_PRIO     ) APP_TASK_ONE_PRIO, (CPU_STK    *)&AppTaskOneStk[0], (CPU_STK_SIZE) APP_TASK_ONE_STK_SIZE / 10u, (CPU_STK_SIZE) APP_TASK_ONE_STK_SIZE, (OS_MSG_QTY  ) 0u, (OS_TICK     ) 0u, (void       *)(CPU_INT32U) 1, (OS_OPT      )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR), 
+                    (OS_ERR     *)&err, (OS_TASK_PERIOD) 10, (OS_TASK_DEADLINE) 10);
+    OSRecTaskCreate((OS_TCB     *)&AppTaskTwoTCB, (CPU_CHAR   *)"App Task Two", (OS_TASK_PTR ) AppTaskTwo, (void       *) 0, (OS_PRIO     ) APP_TASK_TWO_PRIO, (CPU_STK    *)&AppTaskTwoStk[0], (CPU_STK_SIZE) APP_TASK_TWO_STK_SIZE / 10u, (CPU_STK_SIZE) APP_TASK_TWO_STK_SIZE, (OS_MSG_QTY  ) 0u, (OS_TICK     ) 0u, (void       *)(CPU_INT32U) 2, (OS_OPT      )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR), 
+                    (OS_ERR     *)&err, (OS_TASK_PERIOD) 5,  (OS_TASK_DEADLINE)5);
+    OSRecTaskCreate((OS_TCB     *)&AppTaskThreeTCB, (CPU_CHAR   *)"App Task Three", (OS_TASK_PTR ) AppTaskThree, (void       *) 0, (OS_PRIO     ) APP_TASK_THREE_PRIO, (CPU_STK    *)&AppTaskThreeStk[0], (CPU_STK_SIZE) APP_TASK_THREE_STK_SIZE / 10u, (CPU_STK_SIZE) APP_TASK_THREE_STK_SIZE, (OS_MSG_QTY  ) 0u, (OS_TICK     ) 0u, (void       *)(CPU_INT32U) 3, (OS_OPT      )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR), 
+                    (OS_ERR     *)&err, (OS_TASK_PERIOD) 17,  (OS_TASK_DEADLINE) 17);
+    OSRecTaskCreate((OS_TCB     *)&AppTaskFourTCB, (CPU_CHAR   *)"App Task Four", (OS_TASK_PTR ) AppTaskFour, (void       *) 0, (OS_PRIO     ) APP_TASK_FOUR_PRIO, (CPU_STK    *)&AppTaskFourStk[0], (CPU_STK_SIZE) APP_TASK_FOUR_STK_SIZE / 10u, (CPU_STK_SIZE) APP_TASK_FOUR_STK_SIZE, (OS_MSG_QTY  ) 0u, (OS_TICK     ) 0u, (void       *)(CPU_INT32U) 4, (OS_OPT      )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR), 
+                    (OS_ERR     *)&err, (OS_TASK_PERIOD) 25,  (OS_TASK_DEADLINE) 25);
+    OSRecTaskCreate((OS_TCB     *)&AppTaskFiveTCB, (CPU_CHAR   *)"App Task Five", (OS_TASK_PTR ) AppTaskFive, (void       *) 0, (OS_PRIO     ) APP_TASK_FIVE_PRIO, (CPU_STK    *)&AppTaskFiveStk[0], (CPU_STK_SIZE) APP_TASK_FIVE_STK_SIZE / 10u, (CPU_STK_SIZE) APP_TASK_FIVE_STK_SIZE, (OS_MSG_QTY  ) 0u, (OS_TICK     ) 0u, (void       *)(CPU_INT32U) 5, (OS_OPT      )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR), 
+                    (OS_ERR     *)&err, (OS_TASK_PERIOD) 47,  (OS_TASK_DEADLINE) 47);
 
-    
+
+    counter = 0;
     /* Delete this task */
-    OSTaskDel((OS_TCB *)0, &err);
+    OSTaskAppStartDel((OS_TCB *)0, &err);
     
 }
 
@@ -182,27 +203,20 @@ static  void  AppTaskOne (void  *p_arg)
     OS_ERR      err;
     CPU_INT32U  k, i, j;
     
-    if(iMove > 0)
-    {
-      if(iMove%2==0)
-      {  
-      RoboTurn(FRONT, 16, 50);
-      iMove--;
-      }
-      else{
-        RoboTurn(BACK, 16, 50);
-        iMove++;
-      }
-    }
     
-    for(k=0; k<WORKLOAD1; k++)
+      RoboTurn(FRONT, 3, 50);  
+   
+    
+    /*for(k=0; k<WORKLOAD1; k++)
     {
       for(i=0; i <ONESECONDTICK; i++){
         j=2*i;
       }
-     }
+     }*/
+      
+   // printf("1\n");
+    OSRecTaskDel((OS_TCB *)&AppTaskOneTCB, &err);   
     
-    OSTaskDel((OS_TCB *)0, &err);   
 
 }
 
@@ -211,22 +225,88 @@ static  void  AppTaskTwo (void  *p_arg)
 {   
     OS_ERR      err;
     CPU_INT32U  i,k,j=0;
+    //CPU_INT32U  i,k,j=0;
    
-    for(i=0; i <(ONESECONDTICK); i++)
+   /* for(i=0; i <(ONESECONDTICK); i++)
     {
       j = ((i * 2) + j);
-    }
-    
+    }*/
     BSP_LED_Off(0u);
-    for(k=0; k<5; k++)
+    for(k=0; k<1; k++)
     {
       BSP_LED_Toggle(0u);
-      for(i=0; i <ONESECONDTICK/2; i++)
-         j = ((i * 2)+j);
+    for(i=0; i <700000; i++){
     }
-    
+         //j = ((i * 2)+j);
+    }
     BSP_LED_Off(0u);
-   OSTaskDel((OS_TCB *)0, &err);
+   //  printf("2\n");
+  OSRecTaskDel((OS_TCB *)&AppTaskTwoTCB, &err); 
+
+
+}
+
+
+static  void  AppTaskThree (void  *p_arg)
+{ 
+    OS_ERR      err;
+    CPU_INT32U  k, i, j;
+    
+    
+      RoboTurn(BACK, 3, 50);  
+   
+    
+    /*for(k=0; k<WORKLOAD1; k++)
+    {
+      for(i=0; i <ONESECONDTICK; i++){
+        j=2*i;
+      }
+     }*/
+   // printf("3\n");
+    OSRecTaskDel((OS_TCB *)&AppTaskThreeTCB, &err);   
+    
+
+}
+
+static  void  AppTaskFour (void  *p_arg)
+{ 
+    OS_ERR      err;
+    CPU_INT32U  k, i, j;
+    
+    
+      RoboTurn(LEFT_SIDE, 8, 50);  
+   
+    
+    /*for(k=0; k<WORKLOAD1; k++)
+    {
+      for(i=0; i <ONESECONDTICK; i++){
+        j=2*i;
+      }
+     }*/
+   // printf("4\n");
+    OSRecTaskDel((OS_TCB *)&AppTaskFourTCB, &err);  
+    
+
+}
+
+static  void  AppTaskFive (void  *p_arg)
+{ 
+    OS_ERR      err;
+    CPU_INT32U  k, i, j;
+    
+    
+      RoboTurn(RIGHT_SIDE, 8, 50);  
+   
+    
+    /*for(k=0; k<WORKLOAD1; k++)
+    {
+      for(i=0; i <ONESECONDTICK; i++){
+        j=2*i;
+      }
+     }*/
+   // printf("5\n");
+    OSRecTaskDel((OS_TCB *)&AppTaskFiveTCB, &err);   
+    
 
 }
 
@@ -339,3 +419,5 @@ void RoboTurn(tSide dir, CPU_INT16U seg, CPU_INT16U speed)
 
 	return;
 }
+
+

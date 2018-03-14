@@ -31,10 +31,13 @@
 */
 
 #include <os.h>
+#include <avl.h>
 
 #ifdef VSC_INCLUDE_SOURCE_FILE_NAMES
 const  CPU_CHAR  *os_task__c = "$Id: $";
 #endif
+
+
 
 /*
 ************************************************************************************************************************
@@ -392,6 +395,7 @@ void  OSTaskCreate (OS_TCB        *p_tcb,
     OS_PrioInsert(p_tcb->Prio);
     OS_RdyListInsertTail(p_tcb);
 
+
 #if OS_CFG_DBG_EN > 0u
     OS_TaskDbgListAdd(p_tcb);
 #endif
@@ -533,6 +537,7 @@ void  OSTaskDel (OS_TCB  *p_tcb,
     *p_err = OS_ERR_NONE;
 }
 #endif
+
 
 /*$PAGE*/
 /*

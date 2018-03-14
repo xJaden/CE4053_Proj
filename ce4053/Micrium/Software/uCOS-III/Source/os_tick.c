@@ -73,6 +73,7 @@ void  OS_TickTask (void *p_arg)
         if (err == OS_ERR_NONE) {
             if (OSRunning == OS_STATE_OS_RUNNING) {
                 OS_TickListUpdate();                        /* Update all tasks waiting for time                      */
+                OSTaskHandlerUpdate();  
             }
         }
     }

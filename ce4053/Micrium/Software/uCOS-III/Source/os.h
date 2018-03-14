@@ -173,7 +173,7 @@ extern "C" {
 ************************************************************************************************************************
 ************************************************************************************************************************
 */
-
+#define  TASK_RECURSION
 /*
 ========================================================================================================================
 *                                                      TASK STATUS
@@ -653,6 +653,12 @@ typedef  void                      (*OS_APP_HOOK_VOID)(void);
 typedef  void                      (*OS_APP_HOOK_TCB)(OS_TCB *p_tcb);
 #endif
 
+#ifdef  TASK_RECURSION
+typedef  unsigned  int               OS_TASK_PERIOD;
+typedef  unsigned  int               OS_TASK_RELEASE_TIME;
+typedef  unsigned  int               OS_TASK_DEADLINE;
+#endif
+
 /*$PAGE*/
 /*
 ************************************************************************************************************************
@@ -827,6 +833,7 @@ struct  os_mutex {
     OS_PRIO              OwnerOriginalPrio;
     OS_NESTING_CTR       OwnerNestingCtr;                   /* Mutex is available when the counter is 0               */
     CPU_TS               TS;
+    OS_TASK_DEADLINE     ResCeil;
 };
 
 /*$PAGE*/
@@ -975,6 +982,16 @@ struct os_tcb {
     OS_TCB              *DbgPrevPtr;
     OS_TCB              *DbgNextPtr;
     CPU_CHAR            *DbgNamePtr;
+#endif
+     
+    OS_TCB                *sameDeadline;
+    
+#ifdef  TASK_RECURSION
+   OS_TASK_PERIOD         TaskPeriod;
+   OS_TASK_RELEASE_TIME   TaskRelPeriod;
+   OS_TASK_DEADLINE       TaskDeadline;
+   OS_TASK_DEADLINE       TaskAbsDeadline;
+   OS_TASK_DEADLINE       TaskPremptionLevel;
 #endif
 };
 
@@ -1162,6 +1179,7 @@ OS_EXT            OS_OBJ_QTY             OSTaskQty;                   /* Number 
                                                                       /* TICK TASK ---------------------------------- */
 OS_EXT            OS_TICK                OSTickCtr;                   /* Counts the #ticks since startup or last set  */
 OS_EXT            OS_TCB                 OSTickTaskTCB;
+OS_EXT            OS_TCB                 OSTaskHandlerTCB;
 OS_EXT            CPU_TS                 OSTickTaskTimeMax;
 
 
@@ -1229,6 +1247,11 @@ extern  CPU_INT32U    const OSCfg_TickTaskStkSizeRAM;
 extern  OS_OBJ_QTY    const OSCfg_TickWheelSize;
 extern  CPU_INT32U    const OSCfg_TickWheelSizeRAM;
 
+extern OS_PRIO        const  OSCfg_TaskHandlerPrio;
+extern CPU_STK      * const  OSCfg_TaskHandlerStkBasePtr;
+extern CPU_STK_SIZE   const  OSCfg_TaskHandlerStkLimit;
+extern CPU_STK_SIZE   const  OSCfg_TaskHandlerStkSize;
+
 extern  OS_PRIO       const OSCfg_TmrTaskPrio;
 extern  OS_RATE_HZ    const OSCfg_TmrTaskRate_Hz;
 extern  CPU_STK     * const OSCfg_TmrTaskStkBasePtr;
@@ -1257,6 +1280,7 @@ extern  CPU_STK        OSCfg_StatTaskStk[];
 #endif
 
 extern  CPU_STK        OSCfg_TickTaskStk[];
+extern  CPU_STK        OSCfg_TaskHandlerStk[];
 extern  OS_TICK_SPOKE  OSCfg_TickWheel[];
 
 #if (OS_CFG_TMR_EN > 0u)
@@ -1378,6 +1402,7 @@ void          OS_MemInit                (OS_ERR                *p_err);
 
 void          OSMutexCreate             (OS_MUTEX              *p_mutex,
                                          CPU_CHAR              *p_name,
+                                         OS_TASK_DEADLINE       resceil,
                                          OS_ERR                *p_err);
 
 #if OS_CFG_MUTEX_DEL_EN > 0u
@@ -1570,6 +1595,33 @@ void          OSTaskChangePrio          (OS_TCB                *p_tcb,
                                          OS_ERR                *p_err);
 #endif
 
+void         OSTaskHandler              (void                  *p_arg);
+void         OSTaskHandlerUpdate        (void);
+
+void         OSTCBStackReset            (OS_TCB *p_tcb);
+void         OSRecTaskCreate            (OS_TCB                *p_tcb,
+                                         CPU_CHAR              *p_name,
+                                         OS_TASK_PTR            p_task,
+                                         void                  *p_arg,
+                                         OS_PRIO                prio,
+                                         CPU_STK               *p_stk_base,
+                                         CPU_STK_SIZE           stk_limit,
+                                         CPU_STK_SIZE           stk_size,
+                                         OS_MSG_QTY             q_size,
+                                         OS_TICK                time_quanta,
+                                         void                  *p_ext,
+                                         OS_OPT                 opt,
+                                         OS_ERR                *p_err,
+                                         OS_TASK_PERIOD   TaskPeriod,
+                                         OS_TASK_DEADLINE       TaskDeadline);
+
+void          OSRecTaskDel               (OS_TCB               *p_tcb,
+                                         OS_ERR                *p_err);
+
+void          OSTaskAppStartDel          (OS_TCB               *p_tcb,
+                                         OS_ERR                *p_err);
+
+
 void          OSTaskCreate              (OS_TCB                *p_tcb,
                                          CPU_CHAR              *p_name,
                                          OS_TASK_PTR            p_task,
@@ -1676,6 +1728,8 @@ void          OS_TaskDbgListRemove      (OS_TCB                *p_tcb);
 void          OS_TaskInit               (OS_ERR                *p_err);
 
 void          OS_TaskInitTCB            (OS_TCB                *p_tcb);
+
+void          OS_TaskRecDelTCB          (OS_TCB                *p_tcb);
 
 void          OS_TaskQPost              (OS_TCB                *p_tcb,
                                          void                  *p_void,
@@ -1806,6 +1860,7 @@ void          OSSchedRoundRobinYield    (OS_ERR                *p_err);
 #endif
 
 void          OSSched                   (void);
+OS_TCB*          OSEDFSched                (void);
 
 void          OSSchedLock               (OS_ERR                *p_err);
 void          OSSchedUnlock             (OS_ERR                *p_err);
@@ -1834,6 +1889,7 @@ void          OS_StatTaskInit           (OS_ERR                *p_err);
 
 void          OS_TickTask               (void                  *p_arg);
 void          OS_TickTaskInit           (OS_ERR                *p_err);
+void          OS_TaskLoaderInit         (OS_ERR                *p_err);
 
 /*$PAGE*/
 /*
@@ -2313,6 +2369,66 @@ void          OS_TickListUpdate         (void);
 #error  "cpu_core.h, CPU_CORE_VERSION SHOULD be >= V1.25"
 #endif
 
+/*
+************************************************************************************************************************
+*                                                 uC/OS-III DATA STRUCTUREs
+************************************************************************************************************************
+*/    
+/* TASK RECURSION LIST */
+#define NUM_OF_TASKS            (5u)
+             
+
+/*COUNTER OVERFLOW VARIABLES*/
+#define BORDER_BIT                                      (0x80000000)
+#define BORDER_VALUE                                    (2147483647u)
+CPU_INT32U CounterOverflow(CPU_INT32U);
+
+/********************************* PHASE 2 IMPLEMENTATION ***********************/
+
+//#define PIP_DISABLE            0u
+//#define SRP                    1u
+//#define MAX_SYSTEM_CEILING     100u       // To allow all the tasks
+//
+///******************************************************************* AVL TREE FOR MUTEXES AND SYSTEM CEILING****************************************/
+//struct AVL_Node
+//{
+//    OS_MUTEX* mutex_pointer;
+//    OS_TASK_DEADLINE resource_ceiling;
+//    struct AVL_Node *left;
+//    struct AVL_Node *right;
+//    int height;
+//    int entries;
+//};
+//
+//typedef struct AVL_Node AVL_NODE;
+//
+//AVL_NODE* InsertMutex(AVL_NODE*,  OS_MUTEX*, OS_TASK_DEADLINE);
+//AVL_NODE* MaxResCeil(AVL_NODE*);
+//AVL_NODE* DeleteMutex(AVL_NODE*, OS_TASK_DEADLINE);
+//void AvlTreeInit(void);
+//
+///******************************************************************* AVL TREE FOR BLOCKED TASKS****************************************/
+//struct AVL_Node2
+//{
+//    OS_TCB* tcb_pointer[NUM_OF_TASKS];
+//    OS_TASK_DEADLINE preemption_threshold;
+//    struct AVL_Node2 *left;
+//    struct AVL_Node2 *right;
+//    int height2;
+//    int entries;
+//};
+//
+//typedef struct AVL_Node2 AVL_NODE2;
+//
+//AVL_NODE2* InsertBlkTask(AVL_NODE2*,  OS_TCB*, OS_TASK_DEADLINE);
+//AVL_NODE2* MinTaskLevel(AVL_NODE2*);
+//AVL_NODE2* Delblocktask(AVL_NODE2*, OS_TASK_DEADLINE);
+//void Tree234Init(void);
+//
+//extern AVL_NODE* maxresceil;
+//extern AVL_NODE2* mintasklevel;
+//extern AVL_NODE* avl_root;
+//extern AVL_NODE2* avl_root2;
 
 /*
 ************************************************************************************************************************

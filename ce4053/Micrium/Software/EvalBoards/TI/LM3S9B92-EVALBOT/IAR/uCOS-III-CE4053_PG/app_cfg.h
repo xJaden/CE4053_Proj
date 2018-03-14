@@ -45,12 +45,18 @@
 
 #define  APP_TASK_START_PRIO                        	1u
 
+
 #define  APP_TASK_REPEAT_ONE_PRIO                       2u
-#define  APP_TASK_REPEAT_TWO_PRIO                       3u
+#define  APP_TASK_REPEAT_TWO_PRIO                       2u
+#define  APP_TASK_REPEAT_THREE_PRIO                     2u
+#define  APP_TASK_REPEAT_FOUR_PRIO                      2u
+#define  APP_TASK_REPEAT_FIVE_PRIO                      2u
 
-
-#define  APP_TASK_ONE_PRIO                              2u
-#define  APP_TASK_TWO_PRIO                              3u
+#define  APP_TASK_ONE_PRIO                              4u
+#define  APP_TASK_TWO_PRIO                              5u
+#define  APP_TASK_THREE_PRIO                            6u
+#define  APP_TASK_FOUR_PRIO                             7u
+#define  APP_TASK_FIVE_PRIO                             8u
 
 
 
@@ -64,6 +70,9 @@
 #define  APP_TASK_START_STK_SIZE                    128u
 #define  APP_TASK_ONE_STK_SIZE                      128u
 #define  APP_TASK_TWO_STK_SIZE                      128u
+#define  APP_TASK_THREE_STK_SIZE                    128u
+#define  APP_TASK_FOUR_STK_SIZE                     128u
+#define  APP_TASK_FIVE_STK_SIZE                     128u
 
 
 /*
